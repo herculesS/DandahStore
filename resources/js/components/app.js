@@ -6,7 +6,6 @@
 
 require('./bootstrap');
 require('admin-lte');
-window.moment = require('moment')
 
 window.Vue = require('vue');
 
@@ -15,13 +14,11 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 const routes = [
-    { path: '/products', name:'products', component: require('./components/admin/Product.vue').default },
-    { path: '/categories', component: require('./components/admin/Category.vue').default },
-    { path: '/categories/create/:id?', component: require('./components/admin/CategoryForm.vue').default}
+    { path: '/products', component: require('./components/admin/Product.vue') },
+    { path: '/categories', component: require('./components/admin/Category.vue') }
   ]
 
 const router = new VueRouter({
-    mode: 'history',
     routes 
 })  
   

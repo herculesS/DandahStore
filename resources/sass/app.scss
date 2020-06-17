@@ -4,14 +4,14 @@
 // Variables
 @import 'variables';
 
-$fa-font-path: "../webfonts";
-
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
-@import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
-@import '~@fortawesome/fontawesome-free/scss/solid.scss';
-@import '~@fortawesome/fontawesome-free/scss/regular.scss';
-
 @import '~admin-lte/dist/css/adminlte.css';
-@import '~admin-lte/dist/css/adminlte.min.css';
-@import '~admin-lte/dist/css/alt/adminlte.plugins.css';
+@import '@fortawesome/fontawesome-free/scss/fontawesome.scss';
+@import '@fortawesome/fontawesome-free/scss/solid.scss';
+@import '@fortawesome/fontawesome-free/scss/regular.scss';
+
+.router-link-active {
+    background-color: $cyan!important;
+    color: $white!important;
+}
