@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>{{Config::get('store.store_name')}}</title>
   <link rel="icon" href="{{url('/images/store_logo.png')}}">
   <!-- Tell the browser to be responsive to screen width -->
@@ -14,7 +15,7 @@
   
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
-<div class="wrapper">
+<div class="wrapper" id="app">
 
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -58,7 +59,7 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
        
-        <i class="fas fa-user mt-2"></i>
+        <i class="fas fa-user mt-2 image"></i>
         <div class="info">
           <a href="#" class="d-block">{{ ucfirst(Auth::user()->name) }}</a>
         </div>
@@ -69,41 +70,55 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-          <li class="nav-item has-treeview menu-open">
-            <a href="#" class="nav-link active">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Store
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
+  
               <li class="nav-item">
-                <a href="./index.html" class="nav-link active">
-                  <i class="far fa-circle nav-icon"></i>
+              <router-link  :to="'/products'" 
+                  class="nav-link {{ Request::segment(2)  === 'products' ? 'active': null}}">
+                  <i class="nav-icon fas fa-box-open red"></i>
                   <p>Product</p>
-                </a>
+              </router-link>
               </li>
               <li class="nav-item">
+                <router-link  :to="'/categories'" 
+                    class="nav-link {{ Request::segment(2)  === 'categories' ? 'active': null}}">
+                    <i class="nav-icon fas fa-tags red"></i>
+                    <p>Categories</p>
+                </router-link>
+                </li>
+              <li class="nav-item">
                 <a href="./index2.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="nav-icon fas fa-piggy-bank"></i>
                   <p>Sale</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="./index3.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="nav-icon fas fa-user"></i>
                   <p>User</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="./index3.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="nav-icon fas fa-shopping-bag"></i>
                   <p>Purchase</p>
                 </a>
               </li>
-            </ul>
-          </li>
+              <li class="nav-item">
+               
+                <a class="nav-link" href="{{ route('logout') }}"
+                    onclick="event.preventDefault();
+                                  document.getElementById('logout-form').submit();">
+                    <i class="nav-icon fas fa-power-off"></i>
+                    <p>
+                      {{ __('Logout') }}
+                    </p>
+                </a>
+
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+              </li>
+         
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -113,7 +128,13 @@
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper mt-1">
-    @yield('content')
+    <div class="content">
+      <div class="content-fluid">
+        <router-view></router-view>
+        <!-- set progressbar -->
+        <vue-progress-bar></vue-progress-bar>
+      </div>
+    </div>
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
