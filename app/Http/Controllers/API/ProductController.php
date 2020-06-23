@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Intervention\Image\Facades\Image;
 use App\Product;
 use Exception;
 
@@ -45,14 +46,18 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        return new JsonResponse($request->all(), 200);
         try {
+            $name = time() . '.' . explode('/', explode(':', substr($request->image, 0, strpos($request->image, ';')))[1])[1];
+            Image::make($request->image)->save(public_path("images/products/" . $name));
+            $request->merge(['image' => $name]);
+
             Product::create($request->all());
             return new JsonResponse(null, 200);
         } catch (Exception $e) {
             return new JsonResponse(['message' => $e->getMessage()], 500);
         }
     }
+
 
     /**
      * Display the specified resource.
@@ -63,6 +68,7 @@ class ProductController extends Controller
     public function show($id)
     {
         try {
+
             $product = Product::find($id)->with('category')->get();
             return new JsonResponse($product, 200);
         } catch (Exception $e) {
@@ -79,12 +85,24 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-      
+
         try {
-            $product = Product::find($id)->update($request->all());
+            $product = Product::find($id)->get();
+            $currentProductImage = $product[0]->image;
+            if ($currentProductImage != $request->image) {
+                $name = time() . '.' . explode('/', explode(':', substr($request->image, 0, strpos($request->image, ';')))[1])[1];
+                Image::make($request->image)->save(public_path("images/products/" . $name));
+                $request->merge(['image' => $name]);
+
+                $oldProductImage = public_path("images/products/") . $currentProductImage;
+                if (file_exists($oldProductImage)) {
+                    @unlink($oldProductImage);
+                }
+            }
+            Product::find($id)->update($request->all());
             return new JsonResponse($product, 200);
         } catch (Exception $e) {
-            return new JsonResponse(['message' => $e->getMessage()], 500);
+            return $e;
         }
     }
 
@@ -97,7 +115,7 @@ class ProductController extends Controller
     public function destroy($id)
     {
         try {
-           $response = Product::find($id)->delete();
+            $response = Product::find($id)->delete();
             return new JsonResponse($response, 200);
         } catch (Exception $e) {
             return new JsonResponse(['message' => $e->getMessage()], 500);

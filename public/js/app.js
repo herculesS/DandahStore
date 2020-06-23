@@ -2418,66 +2418,59 @@ __webpack_require__.r(__webpack_exports__);
         _this.form.quantity = _this.product_to_edit.quantity;
         _this.form.available = _this.product_to_edit.available;
         _this.form.category_id = _this.product_to_edit.category_id;
+        _this.form.image = _this.product_to_edit.image;
       })["catch"](function (err) {});
     }
   },
   methods: {
     handleFileUpload: function handleFileUpload(event) {
-      this.form.image = event.target.files[0];
+      var _this2 = this;
+
+      var reader = new FileReader();
+
+      reader.onloadend = function () {
+        _this2.form.image = reader.result;
+      };
+
+      reader.readAsDataURL(event.target.files[0]);
     },
     getCategories: function getCategories() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.$Progress.start();
       axios.get("/api/categories").then(function (res) {
-        _this2.$Progress.finish();
+        _this3.$Progress.finish();
 
-        _this2.categories = res.data;
+        _this3.categories = res.data;
       })["catch"](function (err) {
-        _this2.$Progress.fail();
+        _this3.$Progress.fail();
       });
     },
     submit: function submit() {
-      var formData = new FormData();
-      formData.append("name", this.form.name);
-      formData.set("quantity", this.form.quantity);
-      formData.set("name", this.form.available);
-      formData.set("name", this.form.category_id);
-      formData.append("image", this.form.image);
-      axios.put("/api/products/create", formData).then(function (res) {
-        console.log(res); //this.$router.push("/products");
-      })["catch"](function (err) {});
-      return;
-
       if (this.editMode) {
         this.submitCall({
           method: "patch",
           url: "/api/products/update/" + this.product_to_edit_id,
-          data: formData,
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
+          data: this.form
         });
       } else {
         this.submitCall({
           method: "put",
           url: "/api/products/create",
-          data: formData,
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
+          data: this.form
         });
       }
     },
     submitCall: function submitCall(params) {
-      var _this3 = this;
+      var _this4 = this;
 
       this.$Progress.start();
       axios(params).then(function (res) {
-        _this3.$Progress.finish(); //this.$router.push("/products");
+        _this4.$Progress.finish();
 
+        _this4.$router.push("/products");
       })["catch"](function (err) {
-        _this3.$Progress.fail();
+        _this4.$Progress.fail();
       });
     }
   }
