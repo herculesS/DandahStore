@@ -19,8 +19,11 @@ class CreateProductsTable extends Migration
             $table->boolean('available')->default(false);
             $table->unsignedInteger('quantity');
             $table->foreignId('category_id')->constrained();
+           
             $table->timestamps();
         });
+
+        
     }
 
     /**

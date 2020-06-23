@@ -142,7 +142,11 @@ export default {
   },
   methods: {
     handleFileUpload(event) {
-      this.form.image = event.target.files[0];
+      let reader = new FileReader();
+      reader.onloadend = () => {
+        this.form.image = reader.result;
+      };
+      reader.readAsDataURL(event.target.files[0]);
     },
     getCategories() {
       this.$Progress.start();
@@ -157,40 +161,18 @@ export default {
         });
     },
     submit() {
-      const formData = new FormData();
-      formData.append("name", this.form.name);
-      formData.set("quantity", this.form.quantity);
-      formData.set("name", this.form.available);
-      formData.set("name", this.form.category_id);
-      formData.append("image", this.form.image);
-
-      axios
-        .put("/api/products/create", formData)
-        .then(res => {
-          console.log(res);
-          
-          //this.$router.push("/products");
-        })
-        .catch(err => {
-        });
-        return
+     
       if (this.editMode) {
         this.submitCall({
           method: "patch",
           url: "/api/products/update/" + this.product_to_edit_id,
-          data: formData,
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
+          data: this.form,
         });
       } else {
         this.submitCall({
           method: "put",
           url: "/api/products/create",
-          data: formData,
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
+          data: this.form,
         });
       }
     },
