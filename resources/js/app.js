@@ -6,8 +6,9 @@
 
 require('./bootstrap');
 require('admin-lte');
-window.moment = require('moment')
 
+window.moment = require('moment')
+window.swal = require('sweetalert2')
 window.Vue = require('vue');
 
 import VueRouter from 'vue-router'
@@ -16,8 +17,9 @@ Vue.use(VueRouter)
 
 const routes = [
     { path: '/products', name:'products', component: require('./components/admin/Product.vue').default },
+    { path: '/products/form/:id?',  component: require('./components/admin/ProductForm.vue').default },
     { path: '/categories', component: require('./components/admin/Category.vue').default },
-    { path: '/categories/create/:id?', component: require('./components/admin/CategoryForm.vue').default}
+    { path: '/categories/form/:id?', component: require('./components/admin/CategoryForm.vue').default}
   ]
 
 const router = new VueRouter({
@@ -25,6 +27,13 @@ const router = new VueRouter({
     routes 
 })  
   
+import VueProgressBar from 'vue-progressbar'
+
+Vue.use(VueProgressBar, {
+  color: 'rgb(0, 0, 199)',
+  failedColor: 'red',
+  height: '12px'
+})
 
 /**
  * The following block of code may be used to automatically register your
@@ -45,7 +54,16 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+Vue.filter('dateFormatDMY', function (date) {
+            return moment(date).format('D-M-Y');
+        }
+    )
+Vue.filter('booleanFormat', function (arg) {
+    return arg ? 'TRUE' : 'FALSE'
+})
+
 const app = new Vue({
     el: '#app',
-    router
+    router,
+    
 }).$mount('#app');

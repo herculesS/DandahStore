@@ -4,11 +4,13 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Category;
+use Illuminate\Http\JsonResponse;
+use App\Product;
 use Exception;
 
-class CategoryController extends Controller
+class ProductController extends Controller
 {
+
     /**
      * Create a new controller instance.
      *
@@ -19,6 +21,8 @@ class CategoryController extends Controller
         $this->middleware('auth:api');
     }
 
+
+
     /**
      * Display a listing of the resource.
      *
@@ -27,9 +31,9 @@ class CategoryController extends Controller
     public function index()
     {
         try {
-            return response()->json(Category::orderBy('name')->get(), 200);
+            return new JsonResponse(Product::with('category')->get(), 200);
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return new JsonResponse(['message' => $e->getMessage()], 500);
         }
     }
 
@@ -41,11 +45,12 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        return new JsonResponse($request->all(), 200);
         try {
-            Category::create($request->all());
-            return response()->json(null, 201);
+            Product::create($request->all());
+            return new JsonResponse(null, 200);
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return new JsonResponse(['message' => $e->getMessage()], 500);
         }
     }
 
@@ -58,11 +63,10 @@ class CategoryController extends Controller
     public function show($id)
     {
         try {
-            //TODO check for non numeric argument
-            $category = Category::find($id);
-            return response()->json($category, 201);
+            $product = Product::find($id)->with('category')->get();
+            return new JsonResponse($product, 200);
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return new JsonResponse(['message' => $e->getMessage()], 500);
         }
     }
 
@@ -75,10 +79,12 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
+      
         try {
-            Category::find($id)->update($request->all());
+            $product = Product::find($id)->update($request->all());
+            return new JsonResponse($product, 200);
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return new JsonResponse(['message' => $e->getMessage()], 500);
         }
     }
 
@@ -91,10 +97,10 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         try {
-            Category::find($id)->delete();
-            return response()->json(null, 200);
+           $response = Product::find($id)->delete();
+            return new JsonResponse($response, 200);
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return new JsonResponse(['message' => $e->getMessage()], 500);
         }
     }
 }

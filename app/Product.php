@@ -6,11 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+
+    protected $fillable = ['name','available', 'quantity','category_id'];
+
     /**
      * 
      */
     public function category()
     {
-        return $this->hasOne('App\Category');
+        return $this->belongsTo('App\Category');
     }
 }

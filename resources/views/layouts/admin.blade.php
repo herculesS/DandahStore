@@ -131,6 +131,8 @@
     <div class="content">
       <div class="content-fluid">
         <router-view></router-view>
+        <!-- set progressbar -->
+        <vue-progress-bar></vue-progress-bar>
       </div>
     </div>
   </div>
