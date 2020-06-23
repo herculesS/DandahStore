@@ -2418,6 +2418,7 @@ __webpack_require__.r(__webpack_exports__);
         _this.form.quantity = _this.product_to_edit.quantity;
         _this.form.available = _this.product_to_edit.available;
         _this.form.category_id = _this.product_to_edit.category_id;
+        _this.form.image = _this.product_to_edit.image;
       })["catch"](function (err) {});
     }
   },
@@ -2465,8 +2466,9 @@ __webpack_require__.r(__webpack_exports__);
 
       this.$Progress.start();
       axios(params).then(function (res) {
-        _this4.$Progress.finish(); //this.$router.push("/products");
+        _this4.$Progress.finish();
 
+        _this4.$router.push("/products");
       })["catch"](function (err) {
         _this4.$Progress.fail();
       });

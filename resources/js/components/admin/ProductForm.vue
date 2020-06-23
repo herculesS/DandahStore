@@ -136,6 +136,7 @@ export default {
           this.form.quantity = this.product_to_edit.quantity;
           this.form.available = this.product_to_edit.available;
           this.form.category_id = this.product_to_edit.category_id;
+          this.form.image = this.product_to_edit.image;
         })
         .catch(err => {});
     }
@@ -181,7 +182,7 @@ export default {
       axios(params)
         .then(res => {
           this.$Progress.finish();
-          //this.$router.push("/products");
+          this.$router.push("/products");
         })
         .catch(err => {
           this.$Progress.fail();
