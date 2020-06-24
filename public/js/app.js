@@ -2097,15 +2097,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       editMode: false,
       category_to_edit: {},
-      category_to_edit_id: '',
+      category_to_edit_id: "",
       form: {
-        name: ''
-      }
+        name: ""
+      },
+      errors: {}
     };
   },
   created: function created() {
@@ -2115,7 +2122,7 @@ __webpack_require__.r(__webpack_exports__);
     this.editMode = this.category_to_edit_id ? true : false;
 
     if (this.editMode) {
-      axios.get('/api/categories/' + this.category_to_edit_id).then(function (res) {
+      axios.get("/api/categories/" + this.category_to_edit_id).then(function (res) {
         console.log(res.data);
         _this.category_to_edit = res.data;
         _this.form.name = _this.category_to_edit.name;
@@ -2126,16 +2133,16 @@ __webpack_require__.r(__webpack_exports__);
     submit: function submit() {
       if (this.editMode) {
         this.submitCall({
-          method: 'patch',
-          url: '/api/categories/update/' + this.category_to_edit_id,
+          method: "patch",
+          url: "/api/categories/update/" + this.category_to_edit_id,
           data: {
             name: this.form.name
           }
         });
       } else {
         this.submitCall({
-          method: 'put',
-          url: '/api/categories/create',
+          method: "put",
+          url: "/api/categories/create",
           data: {
             name: this.form.name
           }
@@ -2149,8 +2156,11 @@ __webpack_require__.r(__webpack_exports__);
       axios(params).then(function (res) {
         _this2.$Progress.finish();
 
-        _this2.$router.push('/categories');
+        _this2.$router.push("/categories");
       })["catch"](function (err) {
+        var error = Object.assign({}, err);
+        _this2.errors = Object.assign({}, error.response.data.errors);
+
         _this2.$Progress.fail();
       });
     }
@@ -2477,9 +2487,7 @@ __webpack_require__.r(__webpack_exports__);
         _this4.$router.push("/products");
       })["catch"](function (err) {
         var error = Object.assign({}, err);
-        var response = Object.assign({}, error.response.data.errors);
-        console.log("error", response);
-        _this4.errors = response; ///.data.errors;
+        _this4.errors = Object.assign({}, error.response.data.errors);
 
         _this4.$Progress.fail();
       });
@@ -62493,7 +62501,13 @@ var render = function() {
                         _vm.$set(_vm.form, "name", $event.target.value)
                       }
                     }
-                  })
+                  }),
+                  _vm._v(" "),
+                  _vm.errors.name
+                    ? _c("div", { staticClass: "text-danger" }, [
+                        _vm._v(_vm._s(_vm.errors.name[0]))
+                      ])
+                    : _vm._e()
                 ])
               ]),
               _vm._v(" "),

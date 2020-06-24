@@ -42,7 +42,7 @@
                         <span class="input-group-text" id>Upload</span>
                       </div>
                     </div>
-                     <div class="text-danger" v-if="errors.image">{{errors.image[0]}}</div>
+                    <div class="text-danger" v-if="errors.image">{{errors.image[0]}}</div>
                   </div>
                 </div>
               </div>
@@ -58,7 +58,7 @@
                       id="inputSuccess"
                       placeholder="Escreva a quantidade"
                     />
-                     <div class="text-danger" v-if="errors.quantity">{{errors.quantity[0]}}</div>
+                    <div class="text-danger" v-if="errors.quantity">{{errors.quantity[0]}}</div>
                   </div>
                 </div>
                 <div class="col-sm-6">
@@ -191,9 +191,7 @@ export default {
         })
         .catch(err => {
           let error = Object.assign({}, err);
-          let response = Object.assign({}, error.response.data.errors);
-          console.log("error", response);
-          this.errors = response; ///.data.errors;
+          this.errors = Object.assign({}, error.response.data.errors);
           this.$Progress.fail();
         });
     }

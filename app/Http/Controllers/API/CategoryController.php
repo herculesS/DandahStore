@@ -41,12 +41,18 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            Category::create($request->all());
-            return response()->json(null, 201);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
-        }
+        $this->validateCategory($request);
+        Category::create($request->all());
+        return response()->json(null, 201);
+    }
+
+    private function validateCategory($request)
+    {
+        $this->validate($request, [
+            "name" => "required"
+        ], [
+            "name.required" => "Nome da categoria não pode estar em branco."
+        ]);
     }
 
     /**
@@ -75,11 +81,8 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try {
-            Category::find($id)->update($request->all());
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
-        }
+        $this->validateCategory($request);
+        Category::find($id)->update($request->all());
     }
 
     /**
