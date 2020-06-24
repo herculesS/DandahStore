@@ -2097,15 +2097,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       editMode: false,
       category_to_edit: {},
-      category_to_edit_id: '',
+      category_to_edit_id: "",
       form: {
-        name: ''
-      }
+        name: ""
+      },
+      errors: {}
     };
   },
   created: function created() {
@@ -2115,7 +2122,7 @@ __webpack_require__.r(__webpack_exports__);
     this.editMode = this.category_to_edit_id ? true : false;
 
     if (this.editMode) {
-      axios.get('/api/categories/' + this.category_to_edit_id).then(function (res) {
+      axios.get("/api/categories/" + this.category_to_edit_id).then(function (res) {
         console.log(res.data);
         _this.category_to_edit = res.data;
         _this.form.name = _this.category_to_edit.name;
@@ -2126,16 +2133,16 @@ __webpack_require__.r(__webpack_exports__);
     submit: function submit() {
       if (this.editMode) {
         this.submitCall({
-          method: 'patch',
-          url: '/api/categories/update/' + this.category_to_edit_id,
+          method: "patch",
+          url: "/api/categories/update/" + this.category_to_edit_id,
           data: {
             name: this.form.name
           }
         });
       } else {
         this.submitCall({
-          method: 'put',
-          url: '/api/categories/create',
+          method: "put",
+          url: "/api/categories/create",
           data: {
             name: this.form.name
           }
@@ -2149,8 +2156,11 @@ __webpack_require__.r(__webpack_exports__);
       axios(params).then(function (res) {
         _this2.$Progress.finish();
 
-        _this2.$router.push('/categories');
+        _this2.$router.push("/categories");
       })["catch"](function (err) {
+        var error = Object.assign({}, err);
+        _this2.errors = Object.assign({}, error.response.data.errors);
+
         _this2.$Progress.fail();
       });
     }
@@ -2388,6 +2398,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2401,7 +2416,8 @@ __webpack_require__.r(__webpack_exports__);
         available: "",
         category_id: "",
         image: null
-      }
+      },
+      errors: []
     };
   },
   created: function created() {
@@ -2470,6 +2486,9 @@ __webpack_require__.r(__webpack_exports__);
 
         _this4.$router.push("/products");
       })["catch"](function (err) {
+        var error = Object.assign({}, err);
+        _this4.errors = Object.assign({}, error.response.data.errors);
+
         _this4.$Progress.fail();
       });
     }
@@ -62482,7 +62501,13 @@ var render = function() {
                         _vm.$set(_vm.form, "name", $event.target.value)
                       }
                     }
-                  })
+                  }),
+                  _vm._v(" "),
+                  _vm.errors.name
+                    ? _c("div", { staticClass: "text-danger" }, [
+                        _vm._v(_vm._s(_vm.errors.name[0]))
+                      ])
+                    : _vm._e()
                 ])
               ]),
               _vm._v(" "),
@@ -62697,10 +62722,10 @@ var render = function() {
           _c("div", { staticClass: "card-header" }, [
             _vm.editMode
               ? _c("h3", { staticClass: "card-title" }, [
-                  _vm._v("Editing Product")
+                  _vm._v("Edição do Produto")
                 ])
               : _c("h3", { staticClass: "card-title" }, [
-                  _vm._v("Create Product")
+                  _vm._v("Criação de Produto")
                 ])
           ]),
           _vm._v(" "),
@@ -62715,12 +62740,12 @@ var render = function() {
               }
             },
             [
-              _c("div", { staticClass: "card-body text-center" }, [
+              _c("div", { staticClass: "card-body" }, [
                 _c("div", { staticClass: "row" }, [
                   _c("div", { staticClass: "col-md-6" }, [
                     _c("div", { staticClass: "form-group" }, [
                       _c("label", { attrs: { for: "exampleInputEmail1" } }, [
-                        _vm._v("Name")
+                        _vm._v("Nome")
                       ]),
                       _vm._v(" "),
                       _c("input", {
@@ -62735,7 +62760,7 @@ var render = function() {
                         staticClass: "form-control",
                         attrs: {
                           type: "text",
-                          placeholder: "Enter a name for the product"
+                          placeholder: "Dê um nome ao produto."
                         },
                         domProps: { value: _vm.form.name },
                         on: {
@@ -62746,14 +62771,20 @@ var render = function() {
                             _vm.$set(_vm.form, "name", $event.target.value)
                           }
                         }
-                      })
+                      }),
+                      _vm._v(" "),
+                      _vm.errors.name
+                        ? _c("div", { staticClass: "text-danger" }, [
+                            _vm._v(_vm._s(_vm.errors.name[0]))
+                          ])
+                        : _vm._e()
                     ])
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "col-md-6 d-flex" }, [
                     _c("div", { staticClass: "form-group flex-grow-1" }, [
                       _c("label", { attrs: { for: "exampleInputFile" } }, [
-                        _vm._v("Product Image")
+                        _vm._v("Imagem do Produto")
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "input-group" }, [
@@ -62770,12 +62801,18 @@ var render = function() {
                               staticClass: "custom-file-label",
                               attrs: { for: "exampleInputFile" }
                             },
-                            [_vm._v("Choose file")]
+                            [_vm._v("Escolha Imagem")]
                           )
                         ]),
                         _vm._v(" "),
                         _vm._m(0)
-                      ])
+                      ]),
+                      _vm._v(" "),
+                      _vm.errors.image
+                        ? _c("div", { staticClass: "text-danger" }, [
+                            _vm._v(_vm._s(_vm.errors.image[0]))
+                          ])
+                        : _vm._e()
                     ])
                   ])
                 ]),
@@ -62784,7 +62821,7 @@ var render = function() {
                   _c("div", { staticClass: "col-sm-6" }, [
                     _c("div", { staticClass: "form-group" }, [
                       _c("label", { attrs: { for: "inputSuccess" } }, [
-                        _vm._v("Quantity")
+                        _vm._v("Quantidade")
                       ]),
                       _vm._v(" "),
                       _c("input", {
@@ -62800,7 +62837,7 @@ var render = function() {
                         attrs: {
                           type: "number",
                           id: "inputSuccess",
-                          placeholder: "Enter a quantity"
+                          placeholder: "Escreva a quantidade"
                         },
                         domProps: { value: _vm.form.quantity },
                         on: {
@@ -62811,13 +62848,19 @@ var render = function() {
                             _vm.$set(_vm.form, "quantity", $event.target.value)
                           }
                         }
-                      })
+                      }),
+                      _vm._v(" "),
+                      _vm.errors.quantity
+                        ? _c("div", { staticClass: "text-danger" }, [
+                            _vm._v(_vm._s(_vm.errors.quantity[0]))
+                          ])
+                        : _vm._e()
                     ])
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "col-sm-6" }, [
                     _c("div", { staticClass: "form-group" }, [
-                      _c("label", [_vm._v("Categories")]),
+                      _c("label", [_vm._v("Categoria")]),
                       _vm._v(" "),
                       _c(
                         "select",
@@ -62831,7 +62874,7 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { placeholder: "Categories" },
+                          attrs: { placeholder: "Categorias" },
                           on: {
                             change: function($event) {
                               var $$selectedVal = Array.prototype.filter
@@ -62854,7 +62897,7 @@ var render = function() {
                         },
                         [
                           _c("option", { attrs: { disabled: "", value: "" } }, [
-                            _vm._v("Please select category")
+                            _vm._v("Selecione uma categoria")
                           ]),
                           _vm._v(" "),
                           _vm._l(_vm.categories, function(category) {
@@ -62869,12 +62912,18 @@ var render = function() {
                           })
                         ],
                         2
-                      )
+                      ),
+                      _vm._v(" "),
+                      _vm.errors.category_id
+                        ? _c("div", { staticClass: "text-danger" }, [
+                            _vm._v(_vm._s(_vm.errors.category_id[0]))
+                          ])
+                        : _vm._e()
                     ])
                   ])
                 ]),
                 _vm._v(" "),
-                _c("div", { staticClass: "form-group" }, [
+                _c("div", { staticClass: "form-group text-center" }, [
                   _c(
                     "div",
                     {
@@ -62937,7 +62986,7 @@ var render = function() {
                         [
                           _vm._v(
                             _vm._s(
-                              _vm.form.available ? "Available" : "Unavailable"
+                              _vm.form.available ? "Disponível" : "Indisponível"
                             )
                           )
                         ]
@@ -62963,7 +63012,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v("Update")]
+                        [_vm._v("Salvar")]
                       )
                     : _c(
                         "button",
@@ -62976,7 +63025,7 @@ var render = function() {
                             }
                           }
                         },
-                        [_vm._v("Create")]
+                        [_vm._v("Criar")]
                       )
                 ]
               )
