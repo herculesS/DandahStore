@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use App\Product;
 use Exception;
 
@@ -31,10 +33,12 @@ class ProductController extends Controller
      */
     public function index()
     {
-        try {
+        if (Gate::allows("isAdmin")) {
             return new JsonResponse(Product::with('category')->get(), 200);
-        } catch (Exception $e) {
-            return new JsonResponse(['message' => $e->getMessage()], 500);
+        } else if (Gate::allows("isSeller")) {
+            return new JsonResponse(Product::with('category')->where("user_id", Auth::user()->id)->get(), 200);
+        } else {
+            return new JsonResponse(null, 403);
         }
     }
 
@@ -46,11 +50,13 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
- 
+
         $this->validateProduct($request);
         $name = time() . '.' . explode('/', explode(':', substr($request->image, 0, strpos($request->image, ';')))[1])[1];
         Image::make($request->image)->save(public_path("images/products/" . $name));
         $request->merge(['image' => $name]);
+
+        $request->merge(['user_id' => Auth::user()->id]);
 
         Product::create($request->all());
         return new JsonResponse(null, 200);

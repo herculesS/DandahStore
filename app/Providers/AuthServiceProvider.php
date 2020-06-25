@@ -28,6 +28,16 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        Gate::define("isAdmin", function ($user) {
+            return $user->role_id == 1;
+        });
+        Gate::define("isSeller", function ($user) {
+            return $user->role_id == 2;
+        });
+        Gate::define("isBuyer", function ($user) {
+            return $user->role_id == 3;
+        });
+
         Passport::routes();
 
         //
